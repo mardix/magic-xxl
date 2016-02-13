@@ -23,7 +23,7 @@ setup(
     install_requires=[
         'boto',
         'rq==0.5.3',
-        'redis==2.9.1',
+        'redis==2.10.5',
         "redis-collections==0.1.7",
         "rollbar",
         "newrelic",

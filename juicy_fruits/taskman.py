@@ -17,7 +17,7 @@ mytaskman.add_task(my_function_name, *args, **args)
 
 - To process jobs
 
-mytaskman.run_queued_tasks()
+mytaskman.run()
 
 - To received finished data
 
@@ -64,7 +64,7 @@ class TaskMan(object):
                                        aws_secret_access_key=aws_secret_access_key)
 
     def queue(self, pool_key=QUEUED_POOL):
-        name = self.name + "-taskman_" + pool_key
+        name = self.name + pool_key
         queue = self.sqs_conn.get_queue(name)
         if not queue:
             queue = self.sqs_conn.create_queue(name)
@@ -109,13 +109,15 @@ class TaskMan(object):
                                           wait_time_seconds=wait_time):
                 yield message
 
-    def run_finished_queue(self, callback, size=10, pause=5, wait_time=20):
+    def run_finished_queue(self, callback, size=10, pause=5, wait_time=20,
+                           delete=True):
         """
         RUn finished queued and pass the message callable function
         :param callback: fun : callable function
         :param size:
         :param pause:
         :param wait_time:
+        :param delete: (bool) to delete upon processing
         :return:
         """
         for message in self.fetch(pool_key=QUEUED_FINISHED,
@@ -123,9 +125,10 @@ class TaskMan(object):
                                   wait_time=wait_time):
             content = self.message_data_to_object(message)
             callback(content)
-            message.delete()
+            if delete:
+                message.delete()
 
-    def run_queued_tasks(self, size=10, pause=5, burst=False, wait_time=20):
+    def run(self, size=10, pause=5, burst=False, wait_time=20):
         """
         Run the task worker
         :param size: Total of tasks to request at a time
