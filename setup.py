@@ -27,7 +27,8 @@ setup(
         "redis-collections==0.1.7",
         "rollbar",
         "newrelic",
-        "mutagen==1.31"
+        "mutagen==1.31",
+        "elasticsearch-dsl>=2.0.0,<3.0.0"
     ],
     classifiers=[
         'Environment :: Web Environment',

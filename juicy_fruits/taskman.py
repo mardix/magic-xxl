@@ -70,7 +70,7 @@ class TaskMan(object):
             queue = self.sqs_conn.create_queue(name)
         return queue
 
-    def add_task(self, callable, *args, **kwargs):
+    def add(self, callable, *args, **kwargs):
         """
         To add executable tasks
         :param callable:
@@ -120,7 +120,7 @@ class TaskMan(object):
         :param delete: (bool) to delete upon processing
         :return:
         """
-        for message in self.fetch(pool_key=QUEUED_FINISHED,
+        for message in self.fetch(pool_key=FINISHED_POOL,
                                   size=size,
                                   wait_time=wait_time):
             content = self.message_data_to_object(message)
@@ -173,7 +173,6 @@ class TaskMan(object):
 
     def message_data_to_object(self, message):
         return loads(message.get_body())
-
 
     def delete(self):
         """
