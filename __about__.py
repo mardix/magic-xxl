@@ -7,7 +7,7 @@ __all__ = [
 ]
 
 __title__ = "juicy-fruits"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __summary__ = "A collection librairies to work with Juice"
 __uri__ = "https://github.com/mardix/juicy-fruits"
 __author__ = "Mardix"
