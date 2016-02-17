@@ -64,7 +64,7 @@ class TaskMan(object):
                                        aws_secret_access_key=aws_secret_access_key)
 
     def queue(self, pool_key=QUEUED_POOL):
-        name = self.name + pool_key
+        name = self.name + "-" + pool_key
         queue = self.sqs_conn.get_queue(name)
         if not queue:
             queue = self.sqs_conn.create_queue(name)
