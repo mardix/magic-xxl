@@ -28,7 +28,8 @@ setup(
         "rollbar",
         "newrelic",
         "mutagen==1.31",
-        "elasticsearch-dsl>=2.0.0,<3.0.0"
+        "elasticsearch-dsl==0.0.11",
+        "elasticsearch==2.2.0"
     ],
     classifiers=[
         'Environment :: Web Environment',

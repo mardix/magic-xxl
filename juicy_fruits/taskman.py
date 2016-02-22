@@ -70,32 +70,37 @@ class TaskMan(object):
             queue = self.sqs_conn.create_queue(name)
         return queue
 
-    def add(self, callable, *args, **kwargs):
+    def add(self, callable, delay_seconds=None, *args, **kwargs):
         """
         To add executable tasks
         :param callable:
+        :param delay_seconds: Change the visibility delay for this message
         :param args:
         :param kwargs:
         :return:
         """
-        m = self.write_message(QUEUED_POOL, data={
-            'callable': callable,
-            'args': args,
-            'kwargs': kwargs
-            })
+        m = self.write_message(QUEUED_POOL,
+                               delay_seconds=delay_seconds,
+                               data={
+                                    'callable': callable,
+                                    'args': args,
+                                    'kwargs': kwargs
+                               })
         return m.id
 
-    def write_message(self, pool_key, data):
+    def write_message(self, pool_key, data, delay_seconds=None):
         """
-        :param pool_key:
-        :param data:
+        Write the message to the pool
+        :param pool_key: The pool key
+        :param data: the data to save
+        :param delay_seconds: Change the visibility delay for this message
         :return:
         """
         message = sqs.message.Message(body=dumps(data))
-        m = self.queue(pool_key).write(message)
+        m = self.queue(pool_key).write(message, delay_seconds=delay_seconds)
         return m
 
-    def fetch(self, pool_key, size=10, wait_time=20):
+    def fetch(self, pool_key, size=5, wait_time=30):
         """
         Fetch the messages
         :param pool_key:
@@ -109,7 +114,7 @@ class TaskMan(object):
                                           wait_time_seconds=wait_time):
                 yield message
 
-    def run_finished_queue(self, callback, size=10, pause=5, wait_time=20,
+    def run_finished_queue(self, callback, size=5, pause=5, wait_time=30,
                            delete=True):
         """
         RUn finished queued and pass the message callable function
