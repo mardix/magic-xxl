@@ -11,7 +11,7 @@ class ElasticSearchIndex(object):
         self.client = Elasticsearch(uri)
         self.index_name = index
 
-    def new_doc(self, doc_type):
+    def use_doc(self, doc_type):
         return ElasticSearchDoc(client=self.client,
                                 index_name=self.index_name,
                                 doc_type=doc_type)
