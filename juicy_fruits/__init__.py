@@ -4,5 +4,6 @@ from taskman import TaskMan
 
 __all__ = [
     "RedisCollection",
-    "TaskMan"
+    "TaskMan",
+    "ElasticSearchIndex"
 ]
