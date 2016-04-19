@@ -1,5 +1,5 @@
 """
-Juice extras
+magic_xxl
 """
 
 from setuptools import setup, find_packages
@@ -14,9 +14,9 @@ setup(
     description=__summary__,
     long_description=__doc__,
     url=__uri__,
-    download_url='http://github.com/mardix/juicy-fruits/tarball/master',
-    py_modules=['juicy_fruits'],
-    keywords=["juice", "rq", "queue", "redis"],
+    download_url='http://github.com/mardix/magic-xxl/tarball/master',
+    py_modules=['magic_xxl'],
+    keywords=["flask-magic", "rq", "queue", "redis"],
     include_package_data=True,
     packages=find_packages(),
     platforms='any',

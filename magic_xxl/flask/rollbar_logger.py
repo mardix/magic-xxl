@@ -1,11 +1,13 @@
 """
-Add logging config in your config.py
+To log error or events on RollBar
+
+Add logging config in your flask_magic config
 
     LOGGING_CONFIG = {
         "version": 1,
         "handlers": {
             "rollbar": {
-                "class": "application.extras.rollbar_logger.RollbarLogger",
+                "class": "magic_xxl.flask.rollbar_logger.RollbarLogger",
                 "access_token": "",
                 "level": "WARN"
             }
@@ -20,7 +22,7 @@ Add logging config in your config.py
 
 """
 import os
-from juice import get_env, init_app
+from flask_magic import get_env, init_app
 import rollbar
 import rollbar.contrib.flask
 from flask import got_request_exception, request

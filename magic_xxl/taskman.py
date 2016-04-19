@@ -24,7 +24,7 @@ mytaskman.run()
 def callback(data):
     # do something with data
 
-mytaskman.run_finished_tasks(callback)
+mytaskman.run_finished(callback)
 
 Once captured, it will delete the message from the queue
 
@@ -114,26 +114,7 @@ class TaskMan(object):
                                           wait_time_seconds=wait_time):
                 yield message
 
-    def run_finished_queue(self, callback, size=5, pause=5, wait_time=30,
-                           delete=True):
-        """
-        RUn finished queued and pass the message callable function
-        :param callback: fun : callable function
-        :param size:
-        :param pause:
-        :param wait_time:
-        :param delete: (bool) to delete upon processing
-        :return:
-        """
-        for message in self.fetch(pool_key=FINISHED_POOL,
-                                  size=size,
-                                  wait_time=wait_time):
-            content = self.message_data_to_object(message)
-            callback(content)
-            if delete:
-                message.delete()
-
-    def run(self, size=10, pause=5, burst=False, wait_time=20):
+    def run(self, size=5, pause=5, burst=False, wait_time=20):
         """
         Run the task worker
         :param size: Total of tasks to request at a time
@@ -169,6 +150,31 @@ class TaskMan(object):
                 finally:
                     self.write_message(FINISHED_POOL, data)
                     message.delete()
+            if burst:
+                break
+            time.sleep(pause)
+
+    def run_finished(self, callback, size=5, pause=5, burst=False,
+                     wait_time=30, delete=True):
+        """
+        RUn finished queued and pass the message callable function
+        :param callback: fun : callable function
+        :param size:
+        :param pause:
+        :param burst: if true it will run one
+        :param wait_time:
+        :param delete: (bool) to delete upon processing
+        :return:
+        """
+        while True:
+            for message in self.fetch(pool_key=FINISHED_POOL,
+                                      size=size,
+                                      wait_time=wait_time):
+                content = self.message_data_to_object(message)
+                callback(content)
+                if delete:
+                    message.delete()
+
             if burst:
                 break
             time.sleep(pause)

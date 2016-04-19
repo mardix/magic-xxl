@@ -4,7 +4,7 @@ Currently uses NewRelic, to monitor the app
 
 How to use
 
-from juice_extras import apm
+from magic_xxl.flask import newrelic_apm as apm
 
 apm.apm.set_name("www")
 
@@ -14,7 +14,7 @@ Requirements:
         NEWRELIC_LICENSE_KEY
 """
 
-from juice import init_app, get_env
+from flask_magic import init_app, get_env
 import newrelic.agent
 
 newrelic.agent.initialize()

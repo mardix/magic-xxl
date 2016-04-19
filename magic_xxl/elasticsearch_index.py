@@ -4,20 +4,25 @@ from elasticsearch.helpers import scan as es_scan, bulk as es_bulk
 import elasticsearch_dsl as dsl
 
 # ElasticSearch
-class ElasticSearchIndex(object):
+class Index(object):
+
     def __init__(self, url):
+        """
+
+        :param url:
+        """
         uri, index = url.split("/", 2)
         self._uri = uri
         self.client = Elasticsearch(uri)
         self.index_name = index
 
-    def use_doc(self, doc_type):
-        return ElasticSearchDoc(client=self.client,
-                                index_name=self.index_name,
-                                doc_type=doc_type)
+    def use(self, doc_type):
+        return Doc(client=self.client, index_name=self.index_name, doc_type=doc_type)
 
+    def delete(self):
+        self.client.indices.delete(index=self.index_name, ignore=[400, 404])
 
-class ElasticSearchDoc(object):
+class Doc(object):
 
     def __init__(self, client, index_name, doc_type):
         self.client = client
@@ -33,6 +38,12 @@ class ElasticSearchDoc(object):
         return self.client.delete(index=self.index_name,
                                   doc_type=self.doc_type,
                                   **kwargs)
+
+    def get(self, id, *args, **kwargs):
+        return self.client.get(index=self.index_name,
+                               doc_type=self.doc_type,
+                               id=id,
+                               **kwargs)
 
     def search(self, *args, **kwargs):
         return dsl.Search(using=self.client,
