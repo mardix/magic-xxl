@@ -7,7 +7,7 @@ __all__ = [
 ]
 
 __title__ = "magic-xxl"
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 __summary__ = "A collection librairies to work with Flask-Magic"
 __uri__ = "https://github.com/mardix/magic-xxl"
 __author__ = "Mardix"
