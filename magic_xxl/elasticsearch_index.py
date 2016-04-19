@@ -4,7 +4,7 @@ from elasticsearch.helpers import scan as es_scan, bulk as es_bulk
 import elasticsearch_dsl as dsl
 
 # ElasticSearch
-class Index(object):
+class ElasticSearchIndex(object):
 
     def __init__(self, url):
         """
