@@ -53,7 +53,7 @@ class Doc(object):
         return self.client.delete(index=self.index_name,
                                   doc_type=self.doc_type,
                                   id=id,
-                                  ignore=ignore
+                                  ignore=ignore,
                                   **kwargs)
 
     def get(self, id, **kwargs):
