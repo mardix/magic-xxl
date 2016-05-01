@@ -5,19 +5,16 @@ import elasticsearch_dsl as dsl
 
 # ElasticSearch
 class ElasticSearchIndex(object):
-
     def __init__(self, url):
-        """
-
-        :param url:
-        """
         uri, index = url.split("/", 2)
         self._uri = uri
         self.client = Elasticsearch(uri)
         self.index_name = index
 
     def use(self, doc_type):
-        return Doc(client=self.client, index_name=self.index_name, doc_type=doc_type)
+        return Doc(client=self.client,
+                                index_name=self.index_name,
+                                doc_type=doc_type)
 
     def delete(self):
         self.client.indices.delete(index=self.index_name, ignore=[400, 404])
@@ -29,21 +26,56 @@ class Doc(object):
         self.index_name = index_name
         self.doc_type = doc_type
 
-    def index(self, *args, **kwargs):
-        return self.client.create(index=self.index_name,
+    def index(self, id, doc, upsert=True, ignore=[404], **kwargs):
+        """
+        To create or update doc
+        :param id: int
+        :param doc: dict
+        :param upsert: bool
+        :param ignore: dict
+        :param kwargs:
+        :return:
+        """
+        body = doc
+        if upsert:
+            body = {
+                "doc": doc,
+                "doc_as_upsert": True
+            }
+        return self.client.update(index=self.index_name,
                                   doc_type=self.doc_type,
+                                  id=id,
+                                  body=body,
+                                  ignore=ignore,
                                   **kwargs)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, id, ignore=[404], **kwargs):
         return self.client.delete(index=self.index_name,
                                   doc_type=self.doc_type,
+                                  id=id,
+                                  ignore=ignore
                                   **kwargs)
 
-    def get(self, id, *args, **kwargs):
+    def get(self, id, **kwargs):
         return self.client.get(index=self.index_name,
                                doc_type=self.doc_type,
                                id=id,
                                **kwargs)
+
+    def create(self, id, doc, **kwargs):
+        """
+        To create a new index. If it exists, will throw error
+        :param id: int
+        :param doc: dict
+        :param kwargs:
+        :return:
+        """
+        return self.client.create(index=self.index_name,
+                                  doc_type=self.doc_type,
+                                  id=id,
+                                  body=doc,
+                                  **kwargs)
+
 
     def search(self, *args, **kwargs):
         return dsl.Search(using=self.client,
@@ -57,4 +89,4 @@ class Doc(object):
                        index=self.index_name,
                        doc_type=self.doc_type)
         for d in docs:
-            self.client.delete(index=d["_index"], doc_type=d["_type"], id=d["_id"])
+            self.delete(id=d["_id"])
