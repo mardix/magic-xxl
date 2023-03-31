@@ -22,7 +22,7 @@ setup(
     platforms='any',
     install_requires=[
         'boto==2.39.0',
-        'redis==2.10.5',
+        'redis==4.4.4',
         "redis-collections==0.1.7",
         "rollbar==0.12.1",
         "newrelic==2.64.0.48",
